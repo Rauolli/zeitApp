@@ -1,0 +1,25 @@
+﻿/* Da du Objekte wie WorkDay und WorkMonth dynamisch basierend auf den eingelesenen Daten aus Excel erstellst, 
+kannst du das Factory Pattern verwenden. 
+Dieses Pattern vereinfacht die Erstellung von Objekten und sorgt dafür, 
+dass alle Objekterstellungslogiken an einem Ort bleiben. */
+
+public class WorkDayFactory
+{
+    public WorkDay CreateWorkDay(DateTime date, TimeSpan startTime, TimeSpan endTime)
+    {
+        return new WorkDay(date, startTime, endTime);
+    }
+}
+
+public class WorkMonthFactory
+{
+    public WorkMonth CreateWorkMonth(List<WorkDay> workDays)
+    {
+        var month = new WorkMonth();
+        foreach (var day in workDays)
+        {
+            month.AddWorkDay(day);
+        }
+        return month;
+    }
+}

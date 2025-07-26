@@ -1,0 +1,43 @@
+﻿/* Wenn die Berechnungslogik für Arbeitszeiten oder Pausen in Zukunft flexibel sein soll 
+(z.B. wenn verschiedene Tarifverträge oder Regeln gelten), 
+könntest du das Strategy Pattern verwenden. 
+Dadurch kannst du verschiedene Berechnungsstrategien einfach austauschen. */
+
+public interface IWorkTimeCalculationStrategy
+{
+    TimeSpan CalculateTotalWorkTime(TimeSpan startTime, TimeSpan endTime);
+}
+
+public class StandardWorkTimeCalculation : IWorkTimeCalculationStrategy
+{
+    public TimeSpan CalculateTotalWorkTime(TimeSpan startTime, TimeSpan endTime)
+    {
+        return endTime - startTime;
+    }
+}
+
+public class OvertimeWorkTimeCalculation : IWorkTimeCalculationStrategy
+{
+    public TimeSpan CalculateTotalWorkTime(TimeSpan startTime, TimeSpan endTime)
+    {
+        TimeSpan workTime = endTime - startTime;
+        return workTime > TimeSpan.FromHours(8) ? workTime + TimeSpan.FromHours(1) : workTime;
+    }
+}
+
+// #########################################################################################
+// Dann kannst du die Strategie in der WorkDay-Klasse anwenden:
+public class WorkDay
+{
+    private IWorkTimeCalculationStrategy _calculationStrategy;
+
+    public WorkDay(DateTime date, TimeSpan start, TimeSpan end, IWorkTimeCalculationStrategy strategy)
+    {
+        Date = date;
+        StartTime = start;
+        EndTime = end;
+        _calculationStrategy = strategy;
+    }
+
+    public TimeSpan TotalWorkTime => _calculationStrategy.CalculateTotalWorkTime(StartTime, EndTime);
+}
