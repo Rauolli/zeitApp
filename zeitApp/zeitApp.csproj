@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
 	<UseWindowsForms>true</UseWindowsForms>
 	<UseWPF>True</UseWPF>
+    <UserSecretsId>b109394a-600d-4e2c-805a-cc4535403332</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,11 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>

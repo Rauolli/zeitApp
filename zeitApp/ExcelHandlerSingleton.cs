@@ -25,7 +25,7 @@ Dieses Pattern stellt sicher, dass nur eine Instanz der Klasse existiert und erm
         private Excel.Range _usedRange;
         private Excel.Range _headerRow; 
         private Excel.Range _footer;
-        private string[] _headlines =
+        private readonly string[] _headlines =
         {
             "Datum",
             "Start",
@@ -42,8 +42,10 @@ Dieses Pattern stellt sicher, dass nur eine Instanz der Klasse existiert und erm
         // privater Konstruktor verhindert direkte Instanziierung
         private ExcelHandlerSingleton(string filePath)
         {
-            _excelApp = new Excel.Application();
-            _excelApp.Visible = true;
+            _excelApp = new Excel.Application
+            {
+                Visible = true
+            };
             _workbook = _excelApp.Workbooks.Open(filePath);
         }
 
@@ -89,17 +91,22 @@ Dieses Pattern stellt sicher, dass nur eine Instanz der Klasse existiert und erm
                 int col = 1;
                 foreach(Excel.Range cell in row.Cells)
                 {
-                    switch (col)
+                    bool isNotEmptyOrSummen = cell.Value != null || !string.IsNullOrWhiteSpace(cell.Text) || cell.Value != "Summen: ";
+
+                    if (isNotEmptyOrSummen)
                     {
-                        case 1:
-                            date = (DateTime) cell.Value;
-                            break;
-                        case 2:
-                            startTimeAsDouble = cell.Value2 ?? cell.Value2;
-                            break;
-                        case 3:
-                            endTimeAsDouble = cell.Value2 ?? cell.Value2;
-                            break;
+                        switch (col)
+                        {
+                            case 1:
+                                date = (DateTime)cell.Value;
+                                break;
+                            case 2:
+                                startTimeAsDouble = cell.Value2 ?? cell.Value2;
+                                break;
+                            case 3:
+                                endTimeAsDouble = cell.Value2 ?? cell.Value2;
+                                break;
+                        }
                     }
 
                     col++;

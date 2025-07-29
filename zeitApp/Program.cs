@@ -1,8 +1,6 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
+
 
 namespace zeitApp
 {
@@ -22,7 +20,17 @@ namespace zeitApp
             //    return;
             //}
 
-            string excelPath = @"F:\D+P_Naumann\Zeitabrechnung_24.xlsx";
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<Program>() // Falls du secrets verwenden willst
+                .Build();
+
+            string? excelPath = config["Excel:Path"];
+            if (string.IsNullOrEmpty(excelPath))
+            {
+                MessageBox.Show("Der Pfad zur Excel-Datei ist nicht konfiguriert.");
+                return;
+            }
+
             // ExcelHandler-Instanz für das ausgewählte Workbook
             ExcelHandlerSingleton excelHandler = ExcelHandlerSingleton.GetInstance(excelPath);
 
