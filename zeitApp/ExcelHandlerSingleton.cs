@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
@@ -314,8 +315,18 @@ Dieses Pattern stellt sicher, dass nur eine Instanz der Klasse existiert und erm
 
         public void ExportWorksheetAsPDF(Excel.Worksheet ws)
         {
-            string pdfPath = @"F:\D+P_Naumann\pdfs\";
-            ws.ExportAsFixedFormat(Excel.XlFixedFormatType.xlTypePDF, pdfPath + ws.Name + ".pdf");
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<Program>() // Falls du secrets verwenden willst
+                .Build();
+
+            string? excelPDFPath = config["Excel:PDFPath"];
+            if (string.IsNullOrEmpty(excelPDFPath))
+            {
+                MessageBox.Show("Der Pfad zur Excel-Datei ist nicht konfiguriert.");
+                return;
+            }
+
+            ws.ExportAsFixedFormat(Excel.XlFixedFormatType.xlTypePDF, excelPDFPath + ws.Name + ".pdf");
         }
     }
 }
